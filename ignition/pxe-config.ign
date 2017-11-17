@@ -1,0 +1,51 @@
+{
+    "ignition":
+    {
+        "config":
+        {},
+        "version": "2.0.0"
+    },
+    "networkd":
+    {},
+    "passwd":
+    {
+        "users": [
+        {
+            "name": "core",
+            "sshAuthorizedKeys": ["ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAl95IaKrriAV9iX1kP+ol0CU/voF/xCF7U6t5h89kJT5MABwd1DAtEu3RsYWtZ64Q4UUkZzYTnJFYtXtafP/VxDABsPGPRjedenHbNyyn4O3CB9x00mJHC3gK6dQg6PODrKOhZ0+uozXA+ZRy/g66NYG8kzMwZjpqvqg8P51/1pArsxA=="]
+        }]
+    },
+    "storage":
+    {
+        "disks": [
+        {
+            "device": "/dev/sda",
+            "wipeTable": true,
+            "partitions": [
+            {
+                "label": "ROOT",
+                "number": 0,
+                "size": 0,
+                "start": 0
+            }]
+        }],
+        "filesystems": [
+        {
+            "mount":
+            {
+                "device": "/dev/sda1",
+                "format": "ext4",
+                "create":
+                {
+                    "force": true,
+                    "options": [
+                        "-LROOT"
+                    ]
+                }
+            }
+        }]
+    },
+  "systemd": {},
+  "networkd": {},
+  "passwd": {}
+}

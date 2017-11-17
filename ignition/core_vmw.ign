@@ -1,0 +1,125 @@
+{
+  "ignition": {
+    "config": {},
+    "timeouts": {},
+    "version": "2.1.0"
+  },
+  "networkd": {},
+  "passwd": {
+    "users": [
+      {
+        "groups": [
+          "wheel"
+        ],
+        "name": "tomralph",
+        "sshAuthorizedKeys": [
+          "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAEfTZaLchl2KFkZRQsvyyatCV6BKjfi5Dp1g01zqFyMita5H/HWeZOsKoUP8G+HcO0la7IgtIlE2YlAfIdze/rEtQFhm4Adfc38emIxnXUITu+e4B+rcdSzxvmCVi0RTadMDm+P/GTdlJg6nK1312TdtlbMXfB8Gnh8TrjthUHUTU2WoQ==",
+          "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAl95IaKrriAV9iX1kP+ol0CU/voF/xCF7U6t5h89kJT5MABwd1DAtEu3RsYWtZ64Q4UUkZzYTnJFYtXtafP/VxDABsPGPRjedenHbNyyn4O3CB9x00mJHC3gK6dQg6PODrKOhZ0+uozXA+ZRy/g66NYG8kzMwZjpqvqg8P51/1pArsxA=="
+        ]
+      },
+      {
+        "groups": [
+          "wheel"
+        ],
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAEfTZaLchl2KFkZRQsvyyatCV6BKjfi5Dp1g01zqFyMita5H/HWeZOsKoUP8G+HcO0la7IgtIlE2YlAfIdze/rEtQFhm4Adfc38emIxnXUITu+e4B+rcdSzxvmCVi0RTadMDm+P/GTdlJg6nK1312TdtlbMXfB8Gnh8TrjthUHUTU2WoQ==",
+          "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAl95IaKrriAV9iX1kP+ol0CU/voF/xCF7U6t5h89kJT5MABwd1DAtEu3RsYWtZ64Q4UUkZzYTnJFYtXtafP/VxDABsPGPRjedenHbNyyn4O3CB9x00mJHC3gK6dQg6PODrKOhZ0+uozXA+ZRy/g66NYG8kzMwZjpqvqg8P51/1pArsxA=="
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "filesystem": "root",
+        "group": {},
+        "path": "/etc/ntp.conf",
+        "user": {},
+        "contents": {
+          "source": "data:,server%20172.20.0.235%0Aserver%201.pool.ntp.org%0A%23%20-%20Allow%20only%20time%20queries%2C%20at%20a%20limited%20rate.%0A%23%20-%20Allow%20all%20local%20queries%20(IPv4%2C%20IPv6)%0Arestrict%20default%20nomodify%20nopeer%20noquery%20limited%20kod%0Arestrict%20127.0.0.1%0Arestrict%20%5B%3A%3A1%5D%0A",
+          "verification": {}
+        }
+      },
+      {
+        "filesystem": "root",
+        "group": {},
+        "path": "/etc/resolv.conf",
+        "user": {},
+        "contents": {
+          "source": "data:,nameserver%20172.20.0.2%0Anameserver%20172.20.0.4%0A",
+          "verification": {}
+        }
+      },
+      {
+        "filesystem": "root",
+        "group": {},
+        "path": "/etc/motd",
+        "user": {},
+        "contents": {
+          "source": "data:,PXE%20Installed%20CoreOS...%0A",
+          "verification": {}
+        }
+      },
+      {
+        "filesystem": "root",
+        "group": {},
+        "path": "/etc/coreos/update.conf",
+        "user": {},
+        "contents": {
+          "source": "data:,GROUP%3Dstable%0AREBOOT_STRATEGY%3D%22etcd-lock%22%0ALOCKSMITHD_REBOOT_WINDOW_START%3D%22Sun%201%3A00%22%0ALOCKSMITHD_REBOOT_WINDOW_LENGTH%3D%222h%22",
+          "verification": {}
+        },
+        "mode": 420
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "dropins": [
+          {
+            "contents": "[Service]\nEnvironment=COREOS_METADATA_OPT_PROVIDER=--provider=cloudstack-configdrive",
+            "name": "20-clct-provider-override.conf"
+          }
+        ],
+        "name": "coreos-metadata.service"
+      },
+      {
+        "dropins": [
+          {
+            "contents": "[Service]\nEnvironment=COREOS_METADATA_OPT_PROVIDER=--provider=cloudstack-configdrive",
+            "name": "20-clct-provider-override.conf"
+          }
+        ],
+        "name": "coreos-metadata-sshkeys@.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Service for virtual machines hosted on VMware\nDocumentation=http://open-vm-tools.sourceforge.net/about.php\nConditionVirtualization=vmware\n\n[Service]\nRestart=always\nExecStart=/usr/bin/docker run --rm --net=host -v /run/systemd:/run/systemd --name open-vm-tools godmodelabs/open-vm-tools\nExecStop=-/usr/bin/docker stop open-vm-tools\n",
+        "enabled": true,
+        "name": "open-vm-tools.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Set hostname\n\n[Service]\nType=oneshot\nExecStart=/bin/sh -c \"IP=$(ip add show ens160 | awk '/inet/ {print $2}' | cut -d/ -f1 |cut -d. -f4 | head -1) ; sudo hostnamectl set-hostname coreos$IP\"\n",
+        "enabled": true,
+        "name": "runcmd.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Set the time zone\n\n[Service]\nExecStart=/usr/bin/timedatectl set-timezone America/Denver\nRemainAfterExit=yes\nType=oneshot\n",
+        "enabled": true,
+        "name": "settimezone.service"
+      },
+      {
+        "enabled": false,
+        "mask": true,
+        "name": "systemd-timesyncd.service"
+      },
+      {
+        "enable": true,
+        "enabled": true,
+        "name": "ntpd.service"
+      }
+    ]
+  }
+}
+

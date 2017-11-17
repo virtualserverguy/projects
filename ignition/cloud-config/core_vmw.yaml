@@ -1,0 +1,90 @@
+#cloud-config
+
+storage:
+  files:
+    - path: /etc/ntp.conf
+      filesystem: root
+      contents:
+          inline: |
+            server 172.20.0.235
+            server 1.pool.ntp.org
+            # - Allow only time queries, at a limited rate.
+            # - Allow all local queries (IPv4, IPv6)
+            restrict default nomodify nopeer noquery limited kod
+            restrict 127.0.0.1
+            restrict [::1]
+
+    - path: "/etc/resolv.conf"
+      filesystem: root
+      contents: 
+        inline: |
+          nameserver 172.20.0.2
+          nameserver 172.20.0.4
+
+    - path: "/etc/motd"
+      filesystem: root
+      contents: 
+        inline: |
+          PXE Installed CoreOS...
+systemd:
+  units:
+    - name: open-vm-tools.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Service for virtual machines hosted on VMware
+        Documentation=http://open-vm-tools.sourceforge.net/about.php
+        ConditionVirtualization=vmware
+
+        [Service]
+        Restart=always
+        ExecStart=/usr/bin/docker run --rm --net=host -v /run/systemd:/run/systemd --name open-vm-tools godmodelabs/open-vm-tools
+        ExecStop=-/usr/bin/docker stop open-vm-tools
+    - name: runcmd.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set hostname
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/sh -c "IP=$(ip add show ens160 | awk '/inet/ {print $2}' | cut -d/ -f1 |cut -d. -f4 | head -1) ; sudo hostnamectl set-hostname coreos$IP"
+    - name: settimezone.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Set the time zone
+
+        [Service]
+        ExecStart=/usr/bin/timedatectl set-timezone America/Denver
+        RemainAfterExit=yes
+        Type=oneshot
+    - name: systemd-timesyncd.service
+      enabled: false
+      mask: true
+    - name: ntpd.service
+      enabled: true
+      enable: true
+
+  # Update profile
+update:
+    group: stable
+locksmith:
+  reboot_strategy: "etcd-lock"
+  window_start:    "Sun 1:00"
+  window_length:   "2h"
+
+passwd:
+  users:
+    - name: tomralph
+      ssh_authorized_keys:
+        - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAEfTZaLchl2KFkZRQsvyyatCV6BKjfi5Dp1g01zqFyMita5H/HWeZOsKoUP8G+HcO0la7IgtIlE2YlAfIdze/rEtQFhm4Adfc38emIxnXUITu+e4B+rcdSzxvmCVi0RTadMDm+P/GTdlJg6nK1312TdtlbMXfB8Gnh8TrjthUHUTU2WoQ==
+        - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAl95IaKrriAV9iX1kP+ol0CU/voF/xCF7U6t5h89kJT5MABwd1DAtEu3RsYWtZ64Q4UUkZzYTnJFYtXtafP/VxDABsPGPRjedenHbNyyn4O3CB9x00mJHC3gK6dQg6PODrKOhZ0+uozXA+ZRy/g66NYG8kzMwZjpqvqg8P51/1pArsxA==
+      groups:
+        - wheel  
+    - name: core
+      ssh_authorized_keys:
+        - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAEfTZaLchl2KFkZRQsvyyatCV6BKjfi5Dp1g01zqFyMita5H/HWeZOsKoUP8G+HcO0la7IgtIlE2YlAfIdze/rEtQFhm4Adfc38emIxnXUITu+e4B+rcdSzxvmCVi0RTadMDm+P/GTdlJg6nK1312TdtlbMXfB8Gnh8TrjthUHUTU2WoQ==
+        - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAl95IaKrriAV9iX1kP+ol0CU/voF/xCF7U6t5h89kJT5MABwd1DAtEu3RsYWtZ64Q4UUkZzYTnJFYtXtafP/VxDABsPGPRjedenHbNyyn4O3CB9x00mJHC3gK6dQg6PODrKOhZ0+uozXA+ZRy/g66NYG8kzMwZjpqvqg8P51/1pArsxA==
+      groups:
+        - wheel 
