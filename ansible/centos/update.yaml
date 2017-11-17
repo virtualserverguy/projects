@@ -1,0 +1,9 @@
+- name: update centos machines with yum
+  hosts: centos
+  tasks:
+
+  - name: run update
+    yum:
+      name: '*'
+      update_cache: yes 
+      state: latest

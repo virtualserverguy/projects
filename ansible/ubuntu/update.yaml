@@ -1,0 +1,12 @@
+- name: Update Ubuntu hosts with apt
+  hosts: ubuntu
+  tasks:
+
+  - name: update using apt
+    apt:
+      name: '*'
+      update_cache: yes 
+      force_apt_get: yes
+      state: latest
+      autoremove: yes
+      autoclean: yes

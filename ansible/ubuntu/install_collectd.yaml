@@ -1,0 +1,25 @@
+
+
+- name: install collectd
+  hosts: ubuntu
+  tasks:
+
+  - name: install collectd
+    apt:
+      name: collectd
+      update_cache: yes 
+      force_apt_get: yes
+      state: present
+
+  - name: copy configuration file
+    copy:
+      src: /mnt/c/Users/tom.ralph/Downloads/collectd.conf
+      dest: /etc/collectd/
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: restart collectd
+    service:
+      name: collectd 
+      state: restarted  
