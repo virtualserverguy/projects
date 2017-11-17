@@ -1,0 +1,24 @@
+
+
+- name: install collectd
+  hosts: centos
+  tasks:
+
+  - name: install collectd
+    yum:
+      name: collectd
+      update_cache: yes 
+      state: present
+
+  - name: copy configuration file
+    copy:
+      src: /mnt/c/Users/tom.ralph/Downloads/collectd.conf
+      dest: /etc/
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: restart collectd
+    service:
+      name: collectd 
+      state: restarted  
