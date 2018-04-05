@@ -1,3 +1,7 @@
+## Written by:      Tom
+## Dat:             4/5/18
+## Version Notes:   Updated for March 2018 Windows 10 release
+
 Get-appxpackage -allusers *Microsoft.3dbuilder* | Remove-AppxPackage
 Get-appxprovisionedpackage –online | where-object {$_.packagename –like "*Microsoft.3dbuilder*"} | remove-appxprovisionedpackage –online
 
