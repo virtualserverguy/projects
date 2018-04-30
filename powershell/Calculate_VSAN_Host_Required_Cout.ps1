@@ -21,6 +21,7 @@ If ($VSANActualFree < 0) {
 
 # Check VSAN Health:
 $ClusterMoRef = $Cluster.ExtensionData.MoRef
+$VSANHealth = Get-VsanView -Id "VsanVcClusterHealthSystem-vsan-cluster-health-system"
 $VSANHealthStatus = $VSANHealth.VsanQueryVcClusterHealthSummary($ClusterMoRef,2,$null,$true,$null,$true,'defaultView')
 
 If ($VSANHealthStatus.OverallHealth -ne "green") {
