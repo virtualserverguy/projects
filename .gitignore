@@ -1,3 +1,4 @@
 *.vmlinuz
 *.cpio.gz
 *.retry
+ansible/env-answer-file.yml
