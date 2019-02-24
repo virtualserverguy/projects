@@ -2,9 +2,8 @@
   hosts: ubuntu
   tasks:
 
-  - name: autoremove using apt
-    apt:
-      name: '*'
-      force_apt_get: yes
-      autoremove: yes
-      autoclean: yes
+  - name: Autoremove unused packages
+    command: apt-get -y autoremove
+    register: autoremove_output
+    changed_when: "'The following packages will be REMOVED' in autoremove_output.stdout"
+    warn=False
