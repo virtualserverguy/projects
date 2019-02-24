@@ -1,0 +1,10 @@
+- name: Autoremove Ubuntu hosts with apt
+  hosts: ubuntu
+  tasks:
+
+  - name: autoremove using apt
+    apt:
+      name: '*'
+      force_apt_get: yes
+      autoremove: yes
+      autoclean: yes
