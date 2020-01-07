@@ -1,0 +1,18 @@
+   #com2sec readonly  default         community_string
+rocommunity  public
+
+   group public v2c        readonly
+
+   view all    included  .1                               80
+   access public ""      any       noauth    exact  all    none   none
+   syslocation CO, US
+   syscontact Lab Admin <LabAdmin@thevsg.co>
+
+   # This line allows Observium to detect the host OS if the distro script is installed
+   extend .1.3.6.1.4.1.2021.7890.1 distro /usr/bin/distro
+
+   # This line allows Observium to collect an accurate uptime
+   extend uptime /bin/cat /proc/uptime
+
+   # This line enables Observium's ifAlias description injection
+   pass_persist .1.3.6.1.2.1.31.1.1.1.18 /usr/bin/ifAlias_persist

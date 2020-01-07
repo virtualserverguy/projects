@@ -1,0 +1,10 @@
+- hosts: ubuntu
+  tasks:
+  - name: make sure snmpd is installed
+    apt: name=snmpd state=present
+  - name: make sure snmpd is off 
+    service: name=snmpd state=stopped enabled=yes
+  - name: make sure snmpd is configured
+    copy: src=snmpd.conf.etc  dest=/etc/snmp/snmpd.conf
+  - name: make sure snmpd is on
+    service: name=snmpd state=started
