@@ -24,8 +24,8 @@ brew install git
 
 echo "Git config"
 
-git config --global user.name "Brad Parbs"
-git config --global user.email brad@bradparbs.com
+git config --global user.name "Tom Ralph"
+git config --global user.email tom.ralph@thevsg.co
 
 
 echo "Installing brew git utilities..."
@@ -36,10 +36,6 @@ brew install git-flow
 echo "Installing other brew stuff..."
 brew install tree
 brew install wget
-brew install trash
-brew install svn
-brew install mackup
-brew install node
 
 
 #@TODO install our custom fonts and stuff
@@ -49,15 +45,6 @@ brew cleanup
 
 echo "Installing homebrew cask"
 brew install caskroom/cask/brew-cask
-
-echo "Copying dotfiles from Github"
-cd ~
-git clone git@github.com:bradp/dotfiles.git .dotfiles
-cd .dotfiles
-sh symdotfiles
-
-echo "Grunting it up"
-npm install -g grunt-cli
 
 #Install Zsh & Oh My Zsh
 echo "Installing Oh My ZSH..."
@@ -77,14 +64,8 @@ chsh -s /bin/zsh
 # Apps
 apps=(
   alfred
-  bartender
-  bettertouchtool
-  cleanmymac
-  cloud
-  filezilla
   firefox
   iterm2
-  sublime-text2
   textexpander
   vlc
   zoomus
@@ -103,8 +84,6 @@ apps=(
 # Default is: /Users/$user/Applications
 echo "installing apps with Cask..."
 brew cask install --appdir="/Applications" ${apps[@]}
-
-brew cask alfred link
 
 brew install 'htop'
 brew install 'nmap'
